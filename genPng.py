@@ -6,8 +6,8 @@ print(os.getcwd())
 
 assert(len(sys.argv)==2)
 
-texFileDir = "/home/mattkab2/git/snippingTool/eqs/"
-outputDir = "/home/mattkab2/git/snippingTool/pngs/"
+texFileDir = "/home/mattkab2/Git/LatexEqSnippingTool/eqs/"
+outputDir = "/home/mattkab2/Git/LatexEqSnippingTool/pngs/"
 eqDigits = 2
 eqDict = {}
 eqContexts = ["align","align*","equation","equation*"]
@@ -27,6 +27,7 @@ def scanFile(fname,dest,pkgs):
                     pkgs.write(line+'\n')
 
             if line.startswith("%") and ("TEX" in line) and (("png" in line) or ("PNG" in line)):
+                print("EQ DETECTED: ",line)
                 # First check for a label argument"
                 lineTmp = ''.join(line.split())
                 if "label=" in lineTmp:
@@ -61,7 +62,8 @@ def scanFile(fname,dest,pkgs):
                     line = line.replace(envType,envType+"*")
                 dest.write(line)
 
-            if line.startswith("\\input"):
+            if line.startswith("\\input") or line.startswith("\\include{"):
+                print("CALLING SUBPROCESS FOR: ",line)
                 # Recursive call;
                 subFname = line[1+line.find('{'):line.find('}')]+".tex"
                 scanFile(subFname,dest,pkgs)
